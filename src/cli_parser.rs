@@ -36,7 +36,7 @@ impl Args {
                 .value_parser(value_parser!(u8).range(0..=2)),
             )
             .arg(arg!(
-                --"debug-info" "Prints out debug info about host & binary"
+                --"debug-info" "Prints out debug info about binary"
             ))
             .get_matches();
 
@@ -89,11 +89,11 @@ impl Args {
             "VERGEN_RUSTC_COMMIT_DATE",
             "VERGEN_RUSTC_COMMIT_HASH",
             "VERGEN_RUSTC_SEMVER",
-            "VERGEN_SYSINFO_OS_VERSION",
-            "VERGEN_SYSINFO_TOTAL_MEMORY",
-            "VERGEN_SYSINFO_CPU_CORE_COUNT",
-            "VERGEN_SYSINFO_CPU_BRAND",
-            "VERGEN_SYSINFO_CPU_FREQUENCY",
+            // "VERGEN_SYSINFO_OS_VERSION",
+            // "VERGEN_SYSINFO_TOTAL_MEMORY",
+            // "VERGEN_SYSINFO_CPU_CORE_COUNT",
+            // "VERGEN_SYSINFO_CPU_BRAND",
+            // "VERGEN_SYSINFO_CPU_FREQUENCY",
         ];
         let mut info_text: String = String::from("");
 

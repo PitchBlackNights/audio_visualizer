@@ -9,10 +9,17 @@ use log::{LevelFilter, Record};
 use std::io::Write;
 use std::process;
 
+include!(concat!(env!("OUT_DIR"), "/env_vars.rs"));
+
 /// Sets up the program by:
-/// 1. Parsing command arguments
-/// 2. Initializing the logger
+/// 1. Set default environment variables generated at build
+/// 1. Parse command arguments
+/// 2. Initialize the logger
 pub fn setup_program() -> Args {
+    for (key, value) in ENV_VARS {
+        std::env::set_var(key, value);
+    }
+
     let _args: Args = match Args::parse() {
         Ok(arguments) => arguments,
         Err(error) => {

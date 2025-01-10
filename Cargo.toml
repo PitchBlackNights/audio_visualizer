@@ -22,4 +22,4 @@ winit = "0.29.15"
 wgpu = "0.19.4"
 
 [build-dependencies]
-vergen-git2 = { version = "1.0.3", features = ["build", "cargo", "rustc", "si"]}
+vergen-git2 = { version = "1.0.3", features = ["build", "cargo", "rustc", "si", "emit_and_set"]}
