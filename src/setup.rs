@@ -51,7 +51,7 @@ fn init_logger(verbose_level: u8) {
     builder
         .format(move |buf: &mut Formatter, record: &Record<'_>| {
             // Timestamp for time since program start
-            let timestamp: DelayedFormat<StrftimeItems<'_>> = Local::now().format("%H:%M:%S");
+            let timestamp: DelayedFormat<StrftimeItems<'_>> = Local::now().format("%H:%M:%S.%3f");
 
             // Check if log is from executable root (main.rs) and replace with 'main'
             let mut target: String = record.target().to_string();
@@ -71,7 +71,7 @@ fn init_logger(verbose_level: u8) {
                 return Ok(());
             } else if target == "wgpu_core"
                 && verbose_level != 3
-                && record.level() > log::Level::Info
+                && record.level() > log::Level::Warn
             {
                 return Ok(());
             }
