@@ -15,7 +15,7 @@ include!(concat!(env!("OUT_DIR"), "/env_vars.rs"));
 /// 1. Set default environment variables generated at build
 /// 1. Parse command arguments
 /// 2. Initialize the logger
-pub fn setup_program() -> Args {
+pub fn setup_logger_and_args() -> Args {
     for (key, value) in ENV_VARS {
         std::env::set_var(key, value);
     }
@@ -29,21 +29,21 @@ pub fn setup_program() -> Args {
         }
     };
 
-    _init_logger(_args.verbose);
+    init_logger(_args.verbose);
     trace!("Logger was enabled successfully.");
     debug!("Passed Arguments: {:?}", _args);
     _args
 }
 
 /// Initializes the logger (env_logger)
-fn _init_logger(verbose_level: u8) {
+fn init_logger(verbose_level: u8) {
     let mut builder: Builder = Builder::new();
 
     // Determine log level based on build mode and verbosity flag
-    let log_level_filter: LevelFilter = if verbose_level != 0 {
-        LevelFilter::Trace
-    } else if cfg!(debug_assertions) {
+    let log_level_filter: LevelFilter = if verbose_level == 1 {
         LevelFilter::Debug
+    } else if verbose_level == 2 {
+        LevelFilter::Trace
     } else {
         LevelFilter::Info
     };
@@ -66,7 +66,7 @@ fn _init_logger(verbose_level: u8) {
                 .replace(env!("CARGO_PKG_NAME"), "rrt");
 
             let level: String = if record.level().to_string().len() == 4 {
-                format!(" {}", record.level())
+                format!("{} ", record.level())
             } else {
                 record.level().to_string()
             };

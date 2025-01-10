@@ -2,7 +2,7 @@
 
 use clap::{arg, crate_authors, value_parser, ArgMatches, Command};
 use once_cell::sync::Lazy;
-use std::{env, error::Error, process};
+use std::{env, error::Error, process, cmp};
 
 static LONG_VERSION: Lazy<String> = Lazy::new(|| {
     format!(
@@ -45,9 +45,13 @@ impl Args {
             process::exit(0);
         }
 
-        Ok(Args {
-            verbose: matches.get_count("verbose"),
-        })
+        let verbose: u8 = if cfg!(debug_assertions) {
+            cmp::max(1,matches.get_count("verbose"))
+        } else {
+            matches.get_count("verbose")
+        };
+
+        Ok(Args { verbose })
     }
 
     pub fn command() -> Command {
