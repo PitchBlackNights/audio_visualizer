@@ -54,16 +54,29 @@ fn init_logger(verbose_level: u8) {
             let timestamp: DelayedFormat<StrftimeItems<'_>> = Local::now().format("%H:%M:%S");
 
             // Check if log is from executable root (main.rs) and replace with 'main'
-            let target: String = if record.target().contains(env!("CARGO_PKG_NAME")) {
-                "main".to_string()
-            } else {
-                record.target().to_string()
-            };
+            let mut target: String = record.target().to_string();
+            let upto = target
+                .char_indices()
+                .map(|(i, _)| i)
+                .nth(
+                    target
+                        .chars()
+                        .position(|c| c == ':')
+                        .unwrap_or(target.len()),
+                )
+                .unwrap_or(target.len());
+            target.truncate(upto);
 
-            let module_path: String = record
-                .module_path()
-                .unwrap_or("UNKNOWN")
-                .replace(env!("CARGO_PKG_NAME"), "rrt");
+            if target == "wgpu_hal" && verbose_level != 3 {
+                return Ok(());
+            } else if target == "wgpu_core"
+                && verbose_level != 3
+                && record.level() > log::Level::Info
+            {
+                return Ok(());
+            }
+
+            let module_path: String = record.module_path().unwrap_or("UNKNOWN").to_string();
 
             let level: String = if record.level().to_string().len() == 4 {
                 format!("{} ", record.level())

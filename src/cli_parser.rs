@@ -2,7 +2,7 @@
 
 use clap::{arg, crate_authors, value_parser, ArgMatches, Command};
 use once_cell::sync::Lazy;
-use std::{env, error::Error, process, cmp};
+use std::{cmp, env, error::Error, process};
 
 static LONG_VERSION: Lazy<String> = Lazy::new(|| {
     format!(
@@ -31,9 +31,9 @@ impl Args {
             .ignore_errors(true)
             .arg(
                 arg!(
-                    -v --verbose ... "Turns on verbose logging (Max level of 2)"
+                    -v --verbose ... "Turns on verbose logging (Max level of 3, level 3 is not recommended)"
                 )
-                .value_parser(value_parser!(u8).range(0..=2)),
+                .value_parser(value_parser!(u8).range(0..=3)),
             )
             .arg(arg!(
                 --"debug-info" "Prints out debug info about binary"
@@ -46,7 +46,7 @@ impl Args {
         }
 
         let verbose: u8 = if cfg!(debug_assertions) {
-            cmp::max(1,matches.get_count("verbose"))
+            cmp::max(1, matches.get_count("verbose"))
         } else {
             matches.get_count("verbose")
         };
